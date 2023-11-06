@@ -10,11 +10,70 @@ If your plugin does not need CSS, delete this file.
 .preview-container{
 	display: flex;
 	flex-direction: row;
-	height: 90px;
-	width: 400px;
+	height: 120px;
+	width: 100%;
+	position: relative;
+	overflow: hidden;
 	/* background-color: rgba(255, 255, 255, 0.2); */
 	border-radius: var(--radius-s);
 	border: var(--border-width) solid var(--background-modifier-border);
+	box-sizing: border-box;
+	color: inherit;
+	flex-grow: 1;
+	flex-shrink: 1;
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.preview-img{
+		display: block;
+		width: 120px;
+		min-width: 120px;
+		max-width: 120px;
+		height: 100%;
+		background-color: var(--background-secondary-alt);
+		background-position: center;
+		background-size: cover;
+	}
+
+	.preview-info{
+		padding: 12px;
+		display: flex;
+		position: relative;
+		flex-direction: column;
+		justify-content: center;
+		height: 100%;
+		text-decoration: none;
+		width: 100%;
+
+		& div{
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 1;
+			overflow: hidden;
+			color: inherit;
+		}
+
+		.preview-title{
+			font-size: var(--font-small);
+			font-weight: var(--font-semibold);
+		}
+
+		.preview-desc{
+			font-size: var(--font-smallest);
+			padding-top: 0.6em;
+			-webkit-line-clamp: 2;
+		}
+
+		.preview-url{
+			font-size: var(--font-smallest);
+			padding-top: 0.4em;
+			color: var(--text-faint);
+		}
+	}
 }
 
 .dummy-preview-container{
