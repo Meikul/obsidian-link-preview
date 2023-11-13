@@ -9,16 +9,16 @@ import {
 
 // Remember to rename these classes and interfaces!
 
-interface MyPluginSettings {
+interface LinkPreviewSettings {
 	mySetting: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
+const DEFAULT_SETTINGS: LinkPreviewSettings = {
 	mySetting: "default",
 };
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class LinkPreview extends Plugin {
+	settings: LinkPreviewSettings;
 
 	async onload() {
 		await this.loadSettings();
@@ -29,8 +29,8 @@ export default class MyPlugin extends Plugin {
 			name: "Create Link Preview",
 			editorCallback: async (editor: Editor, view: MarkdownView) => {
 				console.log(editor.getSelection());
-				const clipText = await navigator.clipboard.readText();
-				editor.replaceSelection(`\`\`\`link-preview\ncontents\n\`\`\``);
+				const clipText = (await navigator.clipboard.readText()).trim();
+				editor.replaceSelection(`\`\`\`link-preview\n${clipText}\n\`\`\``);
 			},
 		});
 
@@ -97,12 +97,17 @@ export default class MyPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+
+  public static isUrl(str: string): boolean{
+    const urlRegex = new RegExp('(http|ftp|https):\\/\\/([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])', 'g');
+    return urlRegex.test(str);
+  }
 }
 
 class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+	plugin: LinkPreview;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: LinkPreview) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
