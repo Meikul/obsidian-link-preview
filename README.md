@@ -13,7 +13,6 @@ There are a few ways to create a link preview:
 
 ## Installation
 To install Obsidian Link Preview find it in the "Community plugins" section in Obsidian.
-### Instructions
 > [!NOTE]
 > This plugin has not been approved yet, so it can't actually be installed from the list of community plugins.
 1. In Obsidian, open the settings window
