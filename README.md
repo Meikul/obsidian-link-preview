@@ -12,7 +12,7 @@ There are a few ways to create a link preview:
 2. Run the `Link Preview: Create Link Preview` command
 
 Both of these methods create a code block with the language type `linkp` which contains your URL.
-Example:
+
 ````markdown
 ```linkp
 https://github.com/Meikul/obsidian-link-preview

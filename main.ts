@@ -38,7 +38,7 @@ export default class LinkPreview extends Plugin {
 			"linkp",
 			async (src, el, ctx) => {
 				console.log(src);
-				this.createDummyBlock(el);
+				this.createDummyBlock(src, el);
 			}
 		);
 
@@ -48,19 +48,24 @@ export default class LinkPreview extends Plugin {
 
 	onunload() {}
 
-	createDummyBlock(el: HTMLElement) {
-		// const linkInfo = {
-		// 	title: "Detect Body and Hand Pose with Vision - WWDC20 - Videos - Apple Developer",
-		// 	imgUrl: "https://devimages-cdn.apple.com/wwdc-services/images/49/3442/3442_wide_250x141_2x.jpg",
-		// 	description: "Explore how the Vision framework can help your app detect body and hand poses in photos and video. With pose detection, your app can…",
-		// 	url: "https://developer.apple.com/videos/play/wwdc2020/10653/",
-		// };
+	createDummyBlock(src: string, el: HTMLElement) {
+		const appleLinkInfo = {
+			title: "Detect Body and Hand Pose with Vision - WWDC20 - Videos - Apple Developer",
+			imgUrl: "https://devimages-cdn.apple.com/wwdc-services/images/49/3442/3442_wide_250x141_2x.jpg",
+			description: "Explore how the Vision framework can help your app detect body and hand poses in photos and video. With pose detection, your app can…",
+			url: "https://developer.apple.com/videos/play/wwdc2020/10653/",
+		};
 
-		const linkInfo = {
+		const githubLinkInfo = {
 			title: "GitHub - Meikul/obsidian-link-preview",
 			imgUrl: "https://opengraph.githubassets.com/61e9f5709e34fae40dd3f49b7d45590d3d3cca438643420133c44363c1efc8ef/Meikul/obsidian-link-preview",
 			description: "Contribute to Meikul/obsidian-link-preview development by creating an account on GitHub.",
 			url: "https://github.com/Meikul/obsidian-link-preview"
+		}
+
+		let linkInfo = githubLinkInfo;
+		if(src.contains('apple.com')){
+			linkInfo = appleLinkInfo;
 		}
 
 		const container = el.createEl("a", {
