@@ -11,6 +11,14 @@ There are a few ways to create a link preview:
 1. Select the URL **OR** place your cursor next to or somewhere inside the URL.
 2. Run the `Link Preview: Create Link Preview` command
 
+Both of these methods create a code block with the language type `linkp` which contains your URL.
+Example:
+````markdown
+```linkp
+https://github.com/Meikul/obsidian-link-preview
+```
+````
+
 ## Installation
 To install Obsidian Link Preview find it in the "Community plugins" section in Obsidian.
 > [!NOTE]
