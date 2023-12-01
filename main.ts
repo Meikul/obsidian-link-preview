@@ -7,6 +7,8 @@ import {
 	Setting,
 } from "obsidian";
 
+import mql, { MqlResponse } from "@microlink/mql";
+
 // Remember to rename these classes and interfaces!
 
 interface LinkPreviewSettings {
@@ -29,8 +31,15 @@ export default class LinkPreview extends Plugin {
 			name: "Create Link Preview",
 			editorCallback: async (editor: Editor, view: MarkdownView) => {
 				console.log(editor.getSelection());
-				const clipText = (await navigator.clipboard.readText()).trim();
-				editor.replaceSelection(`\`\`\`linkp\n${clipText}\n\`\`\``);
+				const selection = editor.getSelection();
+				let linkText = selection.trim();
+				console.log(editor.current());
+
+				if(!LinkPreview.isUrl(linkText)){
+					linkText = (await navigator.clipboard.readText()).trim();
+				}
+
+				editor.replaceSelection(`\`\`\`linkp\n${linkText}\n\`\`\``);
 			},
 		});
 
@@ -38,7 +47,15 @@ export default class LinkPreview extends Plugin {
 			"linkp",
 			async (src, el, ctx) => {
 				console.log(src);
-				this.createDummyBlock(src, el);
+				this.createDummyBlock(el);
+
+				let url = src.trim();
+
+				if (LinkPreview.isUrl(url)) {
+					// const data = await this.fetchInfo(url);
+					// this.removeDummyBlock(el);
+					// this.createPreview(data, el);
+				}
 			}
 		);
 
@@ -48,46 +65,91 @@ export default class LinkPreview extends Plugin {
 
 	onunload() {}
 
-	createDummyBlock(src: string, el: HTMLElement) {
-		const appleLinkInfo = {
-			title: "Detect Body and Hand Pose with Vision - WWDC20 - Videos - Apple Developer",
-			imgUrl: "https://devimages-cdn.apple.com/wwdc-services/images/49/3442/3442_wide_250x141_2x.jpg",
-			description: "Explore how the Vision framework can help your app detect body and hand poses in photos and video. With pose detection, your app can…",
-			url: "https://developer.apple.com/videos/play/wwdc2020/10653/",
-		};
+	async fakeql(){
 
-		const githubLinkInfo = {
-			title: "GitHub - Meikul/obsidian-link-preview",
-			imgUrl: "https://opengraph.githubassets.com/61e9f5709e34fae40dd3f49b7d45590d3d3cca438643420133c44363c1efc8ef/Meikul/obsidian-link-preview",
-			description: "Contribute to Meikul/obsidian-link-preview development by creating an account on GitHub.",
-			url: "https://github.com/Meikul/obsidian-link-preview"
-		}
+	}
 
-		let linkInfo = githubLinkInfo;
-		if(src.contains('apple.com')){
-			linkInfo = appleLinkInfo;
-		}
+	async fetchInfo(url: string) {
+		// const apiUrl = `https://api.microlink.io?url=${url}&palette=true&audio=true&video=true&iframe=true`;
+
+    // const { data } = await mql(url);
+
+    // console.log(data);
+	const memo = {
+		title: "Cursorless: Voice coding at the speed of thought",
+		description: "Voice coding at the speed of thought",
+		lang: "en",
+		author: null,
+		publisher: "Cursorless",
+		image: {
+			url: "https://cursorless.org/video-share-thumbnail.jpg",
+			type: "jpg",
+			size: 169731,
+			height: 1440,
+			width: 2560,
+			size_pretty: "170 kB",
+		},
+		date: "2023-12-01T19:17:54.000Z",
+		url: "https://cursorless.org/",
+		logo: {
+			url: "https://www.cursorless.org/apple-touch-icon.png?v=1",
+			type: "png",
+			size: 2556,
+			height: 180,
+			width: 180,
+			size_pretty: "2.56 kB",
+		},
+	};
+
+    return memo;
+	}
+
+  createDummyBlock(el: HTMLElement) {
+    el.createEl('div', {
+      cls: 'preview-dummy-block'
+    });
+  }
+
+	createPreview(data: MqlResponseData, el: HTMLElement) {
+		// const appleLinkInfo = {
+		// 	title: "Detect Body and Hand Pose with Vision - WWDC20 - Videos - Apple Developer",
+		// 	imgUrl: "https://devimages-cdn.apple.com/wwdc-services/images/49/3442/3442_wide_250x141_2x.jpg",
+		// 	description: "Explore how the Vision framework can help your app detect body and hand poses in photos and video. With pose detection, your app can…",
+		// 	url: "https://developer.apple.com/videos/play/wwdc2020/10653/",
+		// };
+
+		// const githubLinkInfo = {
+		// 	title: "GitHub - Meikul/obsidian-link-preview",
+		// 	imgUrl: "https://opengraph.githubassets.com/61e9f5709e34fae40dd3f49b7d45590d3d3cca438643420133c44363c1efc8ef/Meikul/obsidian-link-preview",
+		// 	description: "Contribute to Meikul/obsidian-link-preview development by creating an account on GitHub.",
+		// 	url: "https://github.com/Meikul/obsidian-link-preview"
+		// }
+
+		// let linkInfo = githubLinkInfo;
+		// if(src.contains('apple.com')){
+		// 	linkInfo = appleLinkInfo;
+		// }
 
 		const container = el.createEl("a", {
-			cls: "preview-container dummy-preview-container",
-			href: linkInfo.url
+			cls: "preview-container",
+			href: data.url
 		});
 
 		const imgEl = container.createEl("div", { cls: "preview-img" });
-		imgEl.style.backgroundImage = `url("${linkInfo.imgUrl}")`;
+		imgEl.style.backgroundImage = `url("${data.image.url}")`;
 
 		const info = container.createEl("div", { cls: "preview-info" });
 		info.createEl("div", {
 			cls: "preview-title",
-			text: linkInfo.title,
+			text: data.title,
 		});
 		info.createEl("div", {
 			cls: "preview-desc",
-			text: linkInfo.description,
+			text: data.description,
 		});
 		info.createEl("div", {
 			cls: "preview-url",
-			text: linkInfo.url,
+			text: data.url,
 		});
 	}
 
@@ -121,18 +183,5 @@ class SampleSettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 
 		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName("Setting #1")
-			.setDesc("It's a secret")
-			.addText((text) =>
-				text
-					.setPlaceholder("Enter your secret")
-					.setValue(this.plugin.settings.mySetting)
-					.onChange(async (value) => {
-						this.plugin.settings.mySetting = value;
-						await this.plugin.saveSettings();
-					})
-			);
 	}
 }

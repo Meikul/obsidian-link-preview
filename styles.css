@@ -1,11 +1,8 @@
-/*
-
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
-*/
+.preview-dummy-block{
+	height: 120px;
+	background-color: var(--background-modifier-border);
+	display: block;
+}
 
 .preview-container{
 	display: flex;
