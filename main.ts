@@ -4,7 +4,7 @@ import {
 	MarkdownView,
 	Plugin,
 	PluginSettingTab,
-	Setting,
+	Notice,
 } from "obsidian";
 
 import mql, { MqlResponse } from "@microlink/mql";
@@ -33,13 +33,29 @@ export default class LinkPreview extends Plugin {
 				console.log(editor.getSelection());
 				const selection = editor.getSelection();
 				let linkText = selection.trim();
-				console.log(editor.current());
+				let selectionMode = 0;
+				console.log(editor);
 
-				if(!LinkPreview.isUrl(linkText)){
-					linkText = (await navigator.clipboard.readText()).trim();
+
+				if (!LinkPreview.isUrl(linkText)) {
+					linkText = editor.getLine(editor.getCursor().line);
+					selectionMode = 1;
+					if(!LinkPreview.isUrl(linkText)){
+						linkText = (await navigator.clipboard.readText()).trim();
+						selectionMode = 2;
+					}
 				}
-
-				editor.replaceSelection(`\`\`\`linkp\n${linkText}\n\`\`\``);
+				if(LinkPreview.isUrl(linkText)){
+					if(selectionMode === 1){
+						const curLineNum = editor.getCursor().line;
+						const curLineEnd = editor.getLine(curLineNum).length;
+						editor.setSelection({line: curLineNum, ch: 0}, {line: curLineNum, ch:curLineEnd});
+					}
+					editor.replaceSelection(`\`\`\`linkp\n${linkText}\n\`\`\``);
+				}
+				else{
+					new Notice('Not a valid URL', 2000);
+				}
 			},
 		});
 
@@ -65,50 +81,53 @@ export default class LinkPreview extends Plugin {
 
 	onunload() {}
 
-	async fakeql(){
-
-	}
-
 	async fetchInfo(url: string) {
 		// const apiUrl = `https://api.microlink.io?url=${url}&palette=true&audio=true&video=true&iframe=true`;
 
-    // const { data } = await mql(url);
+		// const { data } = await mql(url);
 
-    // console.log(data);
-	const memo = {
-		title: "Cursorless: Voice coding at the speed of thought",
-		description: "Voice coding at the speed of thought",
-		lang: "en",
-		author: null,
-		publisher: "Cursorless",
-		image: {
-			url: "https://cursorless.org/video-share-thumbnail.jpg",
-			type: "jpg",
-			size: 169731,
-			height: 1440,
-			width: 2560,
-			size_pretty: "170 kB",
-		},
-		date: "2023-12-01T19:17:54.000Z",
-		url: "https://cursorless.org/",
-		logo: {
-			url: "https://www.cursorless.org/apple-touch-icon.png?v=1",
-			type: "png",
-			size: 2556,
-			height: 180,
-			width: 180,
-			size_pretty: "2.56 kB",
-		},
-	};
+		// console.log(data);
+		const memo = {
+			title: "Cursorless: Voice coding at the speed of thought",
+			description: "Voice coding at the speed of thought",
+			lang: "en",
+			author: null,
+			publisher: "Cursorless",
+			image: {
+				url: "https://cursorless.org/video-share-thumbnail.jpg",
+				type: "jpg",
+				size: 169731,
+				height: 1440,
+				width: 2560,
+				size_pretty: "170 kB",
+			},
+			date: "2023-12-01T19:17:54.000Z",
+			url: "https://cursorless.org/",
+			logo: {
+				url: "https://www.cursorless.org/apple-touch-icon.png?v=1",
+				type: "png",
+				size: 2556,
+				height: 180,
+				width: 180,
+				size_pretty: "2.56 kB",
+			},
+		};
 
-    return memo;
+		return memo;
 	}
 
-  createDummyBlock(el: HTMLElement) {
-    el.createEl('div', {
-      cls: 'preview-dummy-block'
-    });
-  }
+	removeDummyBlock(el: HTMLElement) {
+		const dummy = el.querySelector('.preview-dummy-block');
+		if(dummy){
+			el.removeChild(dummy);
+		}
+	}
+
+	createDummyBlock(el: HTMLElement) {
+		el.createEl("div", {
+			cls: "preview-dummy-block",
+		});
+	}
 
 	createPreview(data: MqlResponseData, el: HTMLElement) {
 		// const appleLinkInfo = {
@@ -132,7 +151,7 @@ export default class LinkPreview extends Plugin {
 
 		const container = el.createEl("a", {
 			cls: "preview-container",
-			href: data.url
+			href: data.url,
 		});
 
 		const imgEl = container.createEl("div", { cls: "preview-img" });
@@ -165,10 +184,13 @@ export default class LinkPreview extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-  public static isUrl(str: string): boolean{
-    const urlRegex = new RegExp('(http|ftp|https):\\/\\/([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])', 'g');
-    return urlRegex.test(str);
-  }
+	public static isUrl(str: string): boolean {
+		const urlRegex = new RegExp(
+			"(http|ftp|https):\\/\\/([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])",
+			"g"
+		);
+		return urlRegex.test(str);
+	}
 }
 
 class SampleSettingTab extends PluginSettingTab {
