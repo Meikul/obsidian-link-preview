@@ -15,6 +15,7 @@
 	position: relative;
 	overflow: hidden;
 	/* background-color: rgba(255, 255, 255, 0.2); */
+	background: var(--background-primary-alt);
 	border-radius: var(--radius-s);
 	border: var(--border-width) solid var(--background-modifier-border);
 	box-sizing: border-box;
@@ -72,7 +73,7 @@
 		.preview-url{
 			font-size: var(--font-smallest);
 			padding-top: 0.4em;
-			color: var(--text-faint);
+			color: var(--text-muted);
 		}
 	}
 }

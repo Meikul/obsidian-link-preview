@@ -68,9 +68,9 @@ export default class LinkPreview extends Plugin {
 				let url = src.trim();
 
 				if (LinkPreview.isUrl(url)) {
-					// const data = await this.fetchInfo(url);
-					// this.removeDummyBlock(el);
-					// this.createPreview(data, el);
+					const data = await this.fetchInfo(url);
+					this.removeDummyBlock(el);
+					this.createPreview(data, el);
 				}
 			}
 		);
@@ -81,13 +81,50 @@ export default class LinkPreview extends Plugin {
 
 	onunload() {}
 
-	async fetchInfo(url: string) {
+	async fetchInfo(fetchUrl: string) {
 		// const apiUrl = `https://api.microlink.io?url=${url}&palette=true&audio=true&video=true&iframe=true`;
 
-		// const { data } = await mql(url);
+		const { data } = await mql(fetchUrl);
+
+		// const { title, description, image, url } = data;
+
+		// const writeData = {
+		// 	title: title,
+		// 	description: description,
+		// 	image: image?.url,
+		// 	url: url
+		// };
 
 		// console.log(data);
-		const memo = {
+
+		const obsidianInfo = {
+			title: "Obsidian - Sharpen your thinking",
+			description:
+				"Obsidian is the private and flexible note‑taking app that adapts to the way you think.",
+			lang: "en",
+			author: null,
+			publisher: "obsidian.md",
+			image: {
+				url: "https://obsidian.md/images/banner.png",
+				type: "png",
+				size: 139853,
+				height: 688,
+				width: 1200,
+				size_pretty: "140 kB",
+			},
+			date: "2023-11-29T18:35:18.000Z",
+			url: "https://obsidian.md/",
+			logo: {
+				url: "https://obsidian.md/favicon.ico",
+				type: "ico",
+				size: 16027,
+				height: null,
+				width: null,
+				size_pretty: "16 kB",
+			},
+		};
+
+		const cursInfo = {
 			title: "Cursorless: Voice coding at the speed of thought",
 			description: "Voice coding at the speed of thought",
 			lang: "en",
@@ -101,7 +138,7 @@ export default class LinkPreview extends Plugin {
 				width: 2560,
 				size_pretty: "170 kB",
 			},
-			date: "2023-12-01T19:17:54.000Z",
+			date: "2023-12-04T01:06:18.000Z",
 			url: "https://cursorless.org/",
 			logo: {
 				url: "https://www.cursorless.org/apple-touch-icon.png?v=1",
@@ -113,7 +150,60 @@ export default class LinkPreview extends Plugin {
 			},
 		};
 
-		return memo;
+		const appleInfo = {
+			title: "Detect Body and Hand Pose with Vision - WWDC20 - Videos - Apple Developer",
+			description:
+				"Explore how the Vision framework can help your app detect body and hand poses in photos and video. With pose detection, your app can…",
+			lang: "en",
+			author: "Apple Inc.",
+			publisher: "Apple Developer",
+			image: {
+				url: "https://devimages-cdn.apple.com/wwdc-services/images/49/3442/3442_wide_250x141_2x.jpg",
+				type: "jpg",
+				size: 25487,
+				height: 282,
+				width: 500,
+				size_pretty: "25.5 kB",
+			},
+			date: "2020-06-23T00:00:00.000Z",
+			url: "https://developer.apple.com/videos/play/wwdc2020/10653/",
+			logo: {
+				url: "https://developer.apple.com/favicon.ico",
+				type: "ico",
+				size: 22382,
+				height: 16,
+				width: 16,
+				size_pretty: "22.4 kB",
+			},
+		};
+
+		const beavinfo = {
+			"title": "Home Page - Beaver Mountain Ski Resort",
+			"description": "Beaver Mountain Ski Resort Home Page for the oldest continuously-owned family ski resort in the US, featuring runs for every rider.",
+			"lang": "en",
+			"author": ";",
+			"publisher": "Beaver Mountain Ski Resort",
+			"image": {
+				"url": "https://www.skithebeav.com/wp-content/uploads/2020/10/1500x720_home-powder.jpg",
+				"type": "jpg",
+				"size": 97654,
+				"height": 720,
+				"width": 1500,
+				"size_pretty": "97.7 kB"
+			},
+			"date": "2023-11-24T16:27:35.000Z",
+			"url": "https://www.skithebeav.com/",
+			"logo": {
+				"url": "https://www.skithebeav.com/wp-content/themes/skithebeav/favicon.png",
+				"type": "png",
+				"size": 2120,
+				"height": 32,
+				"width": 32,
+				"size_pretty": "2.12 kB"
+			}
+		}
+
+		return data;
 	}
 
 	removeDummyBlock(el: HTMLElement) {
