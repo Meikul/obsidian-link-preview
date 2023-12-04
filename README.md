@@ -1,9 +1,12 @@
-# Obsidian Link Preview
-A plugin that lets you insert visual previews of links into your notes.
 
+# Obsidian Link Preview
+![Link Preview Banner](https://github.com/Meikul/obsidian-link-preview/blob/master/Link%20Preview%20Brand.png?raw=true)
+### Create visual previews of links in your notes.
+Keep track of the places your knowledge is coming from by embedding visual previews of the links in your notes. Make your notes easier to read, easier to share, and nicer to look at.
+
+## How to Use It
 ![Plugin Demonstration GIF](https://github.com/Meikul/obsidian-link-preview/blob/master/Link%20Preview%20Demo.gif?raw=true)
 
-## Usage
 There are a few ways to create a link preview:
 1. Copy the URL into your clipboard
 2. Run the `Link Preview: Create Link Preview` command
